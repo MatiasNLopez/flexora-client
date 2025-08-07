@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { authService, User, LoginCredentials } from '@/services/authService';
+import { AUTH_ENDPOINTS } from '@/lib/endpoints';
 
 interface AuthContextType {
   user: User | null;

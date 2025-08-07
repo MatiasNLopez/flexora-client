@@ -1,21 +1,23 @@
 import axios from 'axios';
+import { TOKENS } from './endpoints';
+import { HTTP_STATUS, TYPE } from './constants';
 
-// Configuración base de la API
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/flexora/api';
+const API_PORT = process.env.NEXT_PUBLIC_API_PORT || '8000';
+const API_HOST = process.env.NEXT_PUBLIC_API_HOST || 'localhost';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'flexora/api';
+const API_BASE_URL = `http://${API_HOST}:${API_PORT}/${API_URL}/`;
 
-// Crear instancia de axios con configuración base
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Para manejar cookies de autenticación
+  withCredentials: true,
 });
 
-// Interceptor para agregar token de autenticación
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem(TOKENS.ACCESS_TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,16 +28,14 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Interceptor para manejar errores de respuesta
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Token expirado o inválido
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      // Redirigir al login si es necesario
-      if (typeof window !== 'undefined') {
+    if (error.response?.status === HTTP_STATUS.UNAUTHORIZED) {
+      localStorage.removeItem(TOKENS.ACCESS_TOKEN);
+      localStorage.removeItem(TOKENS.REFRESH_TOKEN);
+      if (typeof window !== TYPE.UNDEFINED) {
         window.location.href = '/login';
       }
     }
@@ -43,7 +43,6 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Tipos para las respuestas de la API
 export interface ApiResponse<T = any> {
   data: T;
   message?: string;
@@ -57,7 +56,6 @@ export interface PaginatedResponse<T = any> {
   results: T[];
 }
 
-// Funciones de utilidad para las peticiones
 export const api = {
   get: <T>(url: string, params?: any) => 
     apiClient.get<T>(url, { params }),

@@ -19,7 +19,7 @@ export interface UpdateUserData {
 }
 
 class UserService {
-  private readonly USER_ENDPOINT = 'user/';
+  private readonly USER_ENDPOINT = 'users/';
 
   async getUsers(params?: {
     page?: number;

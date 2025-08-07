@@ -1,4 +1,6 @@
 import { api } from '@/lib/api';
+import { AUTH_ENDPOINTS, TOKENS, USER_ENDPOINTS } from '@/lib/endpoints';
+import { log } from 'console';
 
 // Tipos para autenticación
 export interface LoginCredentials {
@@ -10,35 +12,37 @@ export interface AuthResponse {
   access: string;
   refresh: string;
   user: {
-    id: number;
+    user_id: number;
     username: string;
     email: string;
     first_name: string;
     last_name: string;
+    is_active: boolean;
+    created_at: Date;
+    updated_at: Date;
   };
 }
 
 export interface User {
-  id: number;
+  user_id: number;
   username: string;
   email: string;
   first_name: string;
   last_name: string;
   is_active: boolean;
-  date_joined: string;
+  created_at: Date;
+  updated_at : Date;
 }
 
-class AuthService {
-  private readonly AUTH_ENDPOINT = 'auth/';
+class AuthService { 
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>(`${this.AUTH_ENDPOINT}login/`, credentials);
+      const response = await api.post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, credentials);
       
-      // Guardar tokens en localStorage
       if (response.data.access) {
-        localStorage.setItem('access_token', response.data.access);
-        localStorage.setItem('refresh_token', response.data.refresh);
+        localStorage.setItem(TOKENS.ACCESS_TOKEN, response.data.access);
+        localStorage.setItem(TOKENS.REFRESH_TOKEN, response.data.refresh);
       }
       
       return response.data;
@@ -50,43 +54,39 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      await api.post(`${this.AUTH_ENDPOINT}logout/`);
+      await api.post(AUTH_ENDPOINTS.LOGOUT);
     } catch (error) {
       console.error('Error en logout:', error);
     } finally {
-      // Limpiar tokens del localStorage
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem(TOKENS.ACCESS_TOKEN);
+      localStorage.removeItem(TOKENS.REFRESH_TOKEN);
     }
   }
 
   async refreshToken(): Promise<{ access: string }> {
     try {
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = localStorage.getItem(TOKENS.REFRESH_TOKEN);
       if (!refreshToken) {
         throw new Error('No refresh token available');
       }
 
-      const response = await api.post<{ access: string }>(`${this.AUTH_ENDPOINT}token/refresh/`, {
+      const response = await api.post<{ access: string }>(AUTH_ENDPOINTS.REFRESH_TOKEN, {
         refresh: refreshToken,
       });
-
-      // Actualizar token de acceso
-      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem(TOKENS.ACCESS_TOKEN, response.data.access);
       
       return response.data;
     } catch (error) {
       console.error('Error refreshing token:', error);
-      // Limpiar tokens si falla el refresh
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem(TOKENS.ACCESS_TOKEN);   
+      localStorage.removeItem(TOKENS.REFRESH_TOKEN);
       throw error;
     }
   }
 
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await api.get<User>(`${this.AUTH_ENDPOINT}user/`);
+      const response = await api.get<User>(AUTH_ENDPOINTS.CURRENT_USER);
       return response.data;
     } catch (error) {
       console.error('Error getting current user:', error);
@@ -95,11 +95,11 @@ class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!localStorage.getItem(TOKENS.ACCESS_TOKEN);
   }
 
   getAccessToken(): string | null {
-    return localStorage.getItem('access_token');
+    return localStorage.getItem(TOKENS.ACCESS_TOKEN);
   }
 }
 

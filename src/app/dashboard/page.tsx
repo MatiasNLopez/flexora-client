@@ -66,7 +66,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <dt className="text-sm font-medium text-gray-500">ID</dt>
-                  <dd className="mt-1 text-sm text-gray-900">{user?.id}</dd>
+                  <dd className="mt-1 text-sm text-gray-900">{user?.user_id}</dd>
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Usuario</dt>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Fecha de Registro</dt>
                   <dd className="mt-1 text-sm text-gray-900">
-                    {user?.date_joined ? new Date(user.date_joined).toLocaleDateString('es-ES') : 'N/A'}
+                    {user?.created_at ? new Date(user.created_at).toLocaleDateString('es-ES') : 'N/A'}
                   </dd>
                 </div>
               </div>
