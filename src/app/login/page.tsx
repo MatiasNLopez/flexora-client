@@ -3,15 +3,20 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import TextInput from '@/components/iu/inputs/TextInput';
+import Checkbox from '@/components/iu/inputs/Checkbox';
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({
     username: '',
     password: '',
   });
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const router = useRouter();
 
@@ -39,65 +44,64 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Iniciar Sesión
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Accede a tu cuenta de Flexora
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Usuario
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Usuario"
-                value={credentials.username}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Contraseña
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Contraseña"
-                value={credentials.password}
-                onChange={handleChange}
-              />
-            </div>
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2">
+            <Image src="/Flexora_icon.png" width={32} height={32} alt="Flexora" />
+            <span className="text-2xl font-semibold text-gray-900">Flexora</span>
           </div>
+          <h1 className="mt-6 text-xl font-medium text-gray-900">Accede a tu cuenta</h1>
+        </div>
+
+        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+          <TextInput
+            label="Email or username"
+            id="username"
+            name="username"
+            type="text"
+            required
+            placeholder="Enter email or username"
+            value={credentials.username}
+            onChange={handleChange}
+          />
+
+          <TextInput
+            label="Password"
+            id="password"
+            name="password"
+            type="password"
+            required
+            placeholder="Enter your password"
+            value={credentials.password}
+            onChange={handleChange}
+          />
 
           {error && (
-            <div className="text-red-600 text-sm text-center">
-              {error}
-            </div>
+            <div className="text-red-600 text-sm text-center">{error}</div>
           )}
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-            </button>
+          <div className="flex items-center justify-between text-sm">
+            <Checkbox
+              label="Remember me"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.currentTarget.checked)}
+            />
+            <Link href="#" className="text-indigo-600 hover:text-indigo-700">Forgot password?</Link>
           </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full rounded-lg bg-indigo-600 py-2.5 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            {isLoading ? 'Iniciando sesión...' : 'Login'}
+          </button>
+
+          <p className="text-center text-sm text-gray-600">
+            Don’t have an account?{' '}
+            <Link href="#" className="text-indigo-600 hover:text-indigo-700">Sign up</Link>
+          </p>
         </form>
       </div>
     </div>
