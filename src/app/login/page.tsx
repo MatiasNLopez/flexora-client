@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import TextInput from '@/components/iu/inputs/TextInput';
 import Checkbox from '@/components/iu/inputs/Checkbox';
+import { IMAGES } from '@/lib/constants';
 
 export default function LoginPage() {
   const [credentials, setCredentials] = useState({
@@ -48,7 +49,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center">
           <div className="inline-flex items-center gap-2">
-            <Image src="/Flexora_icon.png" width={32} height={32} alt="Flexora" />
+            <Image src={IMAGES.FLEXORA_LOGO} width={32} height={32} alt="Flexora" />
             <span className="text-2xl font-semibold text-gray-900">Flexora</span>
           </div>
           <h1 className="mt-6 text-xl font-medium text-gray-900">Accede a tu cuenta</h1>

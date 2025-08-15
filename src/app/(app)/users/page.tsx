@@ -1,10 +1,12 @@
+
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import UserDataTable, { ColumnDef } from '@/components/iu/UserDataTable';
 import { userService } from '@/services/userService';
-import { User } from '@/services/authService';
+import { UserField, type User } from '@/models/user';
 import { useRouter } from 'next/navigation';
+import { IMAGES } from '@/lib/constants';
 
 export default function UsersPage() {
   const [search, setSearch] = useState('');
@@ -75,12 +77,12 @@ export default function UsersPage() {
 
   const columns: ColumnDef<User>[] = useMemo(
     () => [
-      { key: 'username', header: 'User' },
-      { key: 'first_name', header: 'First Name' },
-      { key: 'last_name', header: 'Last Name' },
-      { key: 'email', header: 'Email' },
+      { key: UserField.username, header: 'User' },
+      { key: UserField.first_name, header: 'First Name' },
+      { key: UserField.last_name, header: 'Last Name' },
+      { key: UserField.email, header: 'Email' },
       {
-        key: 'created_at',
+        key: UserField.created_at,
         header: 'Created Date',
         accessor: (u) => new Date(u.created_at).toLocaleDateString(),
       },
@@ -124,7 +126,7 @@ export default function UsersPage() {
           </button>
         }
         renderProfile={(u) => ({
-          avatarUrl: '/AvatarDefault.svg',
+          avatarUrl: IMAGES.DEFAULT_AVATAR,
           title: u.username,
           subtitle: u.email,
           alt: `${u.username} avatar`,

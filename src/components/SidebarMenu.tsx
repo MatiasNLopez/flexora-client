@@ -16,6 +16,8 @@ import {
 } from "react-icons/hi";
 import SidebarItemGroup from "./iu/SidebarItemGroup";
 import SidebarItem from "./iu/SidebarItem";
+import { IMAGES } from "@/lib/constants";
+import { URLS } from "@/lib/enpoints"; 
 
 export default function SidebarMenu() {
   const [open, setOpen] = useState(false);
@@ -38,7 +40,7 @@ export default function SidebarMenu() {
       >
         <div className="h-full overflow-y-auto px-3 py-4">
           <Sidebar aria-label="Flexora Sidebar" className="!bg-transparent">
-            <SidebarLogo href="#" img="/next.svg" imgAlt="Flexora" className="mb-3">
+            <SidebarLogo href="#" img={IMAGES.FLEXORA_LOGO} imgAlt="Flexora" className="mb-4">
               Flexora
             </SidebarLogo>
 
@@ -54,11 +56,11 @@ export default function SidebarMenu() {
                 </SidebarCollapse>
 
                 <SidebarCollapse icon={HiOutlineUser} label="Users">
-                  <SidebarItem as={Link} href="/dashboard/users">List</SidebarItem>
-                  <SidebarItem as={Link} href="/dashboard/roles">Roles</SidebarItem>
+                  <SidebarItem as={Link} href={URLS.users}>List</SidebarItem>
+                  <SidebarItem as={Link} href={URLS.roles}>Roles</SidebarItem>
                 </SidebarCollapse>
 
-                <SidebarItem as={Link} href="#" icon={HiOutlineLockClosed}>
+                <SidebarItem as={Link} href={URLS.products} icon={HiOutlineLockClosed}>
                   Products
                 </SidebarItem>
 

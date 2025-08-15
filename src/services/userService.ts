@@ -1,5 +1,6 @@
 import { api, PaginatedResponse } from '@/lib/api';
-import { User } from './authService';
+import type { User } from '@/models/user';
+import { USER_ENDPOINTS } from '@/lib/api_endpoints';
 
 export interface CreateUserData {
   username: string;
@@ -19,7 +20,6 @@ export interface UpdateUserData {
 }
 
 class UserService {
-  private readonly USER_ENDPOINT = 'users/';
 
   async getUsers(params?: {
     page?: number;
@@ -28,7 +28,7 @@ class UserService {
     ordering?: string;
   }): Promise<PaginatedResponse<User>> {
     try {
-      const response = await api.get<PaginatedResponse<User>>(this.USER_ENDPOINT, params);
+      const response = await api.get<PaginatedResponse<User>>(USER_ENDPOINTS.LIST, params);
       return response.data;
     } catch (error) {
       console.error('Error getting users:', error);
@@ -38,7 +38,7 @@ class UserService {
 
   async getUserById(id: number): Promise<User> {
     try {
-      const response = await api.get<User>(`${this.USER_ENDPOINT}${id}/`);
+      const response = await api.get<User>(USER_ENDPOINTS.DETAIL(id));
       return response.data;
     } catch (error) {
       console.error('Error getting user by id:', error);
@@ -48,7 +48,7 @@ class UserService {
 
   async createUser(userData: CreateUserData): Promise<User> {
     try {
-      const response = await api.post<User>(this.USER_ENDPOINT, userData);
+      const response = await api.post<User>(USER_ENDPOINTS.CREATE, userData);
       return response.data;
     } catch (error) {
       console.error('Error creating user:', error);
@@ -58,7 +58,7 @@ class UserService {
 
   async updateUser(id: number, userData: UpdateUserData): Promise<User> {
     try {
-      const response = await api.patch<User>(`${this.USER_ENDPOINT}${id}/`, userData);
+      const response = await api.patch<User>(USER_ENDPOINTS.UPDATE(id), userData);
       return response.data;
     } catch (error) {
       console.error('Error updating user:', error);
@@ -68,7 +68,7 @@ class UserService {
 
   async deleteUser(id: number): Promise<void> {
     try {
-      await api.delete(`${this.USER_ENDPOINT}${id}/`);
+      await api.delete(USER_ENDPOINTS.DELETE(id));
     } catch (error) {
       console.error('Error deleting user:', error);
       throw error;
@@ -77,7 +77,7 @@ class UserService {
 
   async activateUser(id: number): Promise<User> {
     try {
-      const response = await api.patch<User>(`${this.USER_ENDPOINT}${id}/activate/`);
+      const response = await api.patch<User>(USER_ENDPOINTS.ACTIVATE(id));
       return response.data;
     } catch (error) {
       console.error('Error activating user:', error);
@@ -87,7 +87,7 @@ class UserService {
 
   async deactivateUser(id: number): Promise<User> {
     try {
-      const response = await api.patch<User>(`${this.USER_ENDPOINT}${id}/deactivate/`);
+      const response = await api.patch<User>(USER_ENDPOINTS.DEACTIVATE(id));
       return response.data;
     } catch (error) {
       console.error('Error deactivating user:', error);

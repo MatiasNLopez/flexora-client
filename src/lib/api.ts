@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { TOKENS } from './endpoints';
+import { TOKENS } from './api_endpoints';
 import { HTTP_STATUS, TYPE } from './constants';
+import { URLS } from './enpoints';
 
 const API_PORT = process.env.NEXT_PUBLIC_API_PORT || '8000';
 const API_HOST = process.env.NEXT_PUBLIC_API_HOST || 'localhost';
@@ -17,9 +18,11 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(TOKENS.ACCESS_TOKEN);
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== TYPE.UNDEFINED) {
+      const token = localStorage.getItem(TOKENS.ACCESS_TOKEN);
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -33,10 +36,10 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === HTTP_STATUS.UNAUTHORIZED) {
-      localStorage.removeItem(TOKENS.ACCESS_TOKEN);
-      localStorage.removeItem(TOKENS.REFRESH_TOKEN);
       if (typeof window !== TYPE.UNDEFINED) {
-        window.location.href = '/login';
+        localStorage.removeItem(TOKENS.ACCESS_TOKEN);
+        localStorage.removeItem(TOKENS.REFRESH_TOKEN);
+        window.location.href = URLS.login;
       }
     }
     return Promise.reject(error);

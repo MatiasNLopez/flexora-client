@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { URLS } from '@/lib/enpoints';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -10,13 +11,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      router.push(URLS.login);
     }
   }, [isAuthenticated, isLoading, router]);
 
   const handleLogout = async () => {
     await logout();
-    router.push('/login');
+    router.push(URLS.login);
   };
 
   if (isLoading) {

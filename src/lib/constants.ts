@@ -1,3 +1,11 @@
+import { IMAGES_PATHS } from "./images_config";
+
+export const PATHS = {
+  PUBLIC: {
+    IMAGES : '/images',
+  },
+} as const;
+
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
@@ -26,3 +34,9 @@ export const PAGINATION = {
 export const TYPE = {
   UNDEFINED: 'undefined',
 } as const; 
+
+export const IMAGES = {
+  FLEXORA_LOGO: `${PATHS.PUBLIC.IMAGES}/${IMAGES_PATHS.FLEXORA_LOGO}`,
+  FLEXORA_LOGO_SMALL: `${PATHS.PUBLIC.IMAGES}/${IMAGES_PATHS.FLEXORA_LOGO_SMALL}`,
+  DEFAULT_AVATAR: `${PATHS.PUBLIC.IMAGES}/${IMAGES_PATHS.DEFAULT_AVATAR}`,
+} as const;

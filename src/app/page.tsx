@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
+import { URLS } from '@/lib/enpoints';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -13,7 +14,7 @@ export default function Home() {
       if (isAuthenticated) {
         router.push('/dashboard');
       } else {
-        router.push('/login');
+        router.push(URLS.login);  
       }
     }
   }, [isAuthenticated, isLoading, router]);

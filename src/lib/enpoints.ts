@@ -1,0 +1,16 @@
+export const URLS = { 
+    login: '/login',
+    logout: '/logout',
+    refresh_token: '/refresh_token',
+    current_user: '/current_user',
+    users: '/users',
+    roles: '/roles',
+    configurations: '/configurations',
+    languages: '/languages',
+    dashboard: '/dashboard',
+    messages: '/messages',
+    message_details: '/message_details',
+    pos_order: '/pos_order',
+    settings: '/settings',
+    products: '/products',
+} as const;

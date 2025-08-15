@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { HiOutlineBell, HiOutlineMoon, HiOutlineSearch, HiOutlineChevronDown } from "react-icons/hi";
 import { ChangeEvent } from "react";
+import { IMAGES } from "@/lib/constants";
 
 export type NavBarUser = {
   name: string;
@@ -82,7 +83,7 @@ export default function NavBar(props: NavBarProps) {
           {/* User */}
           <div className="flex items-center gap-3">
             {(() => {
-              const avatarSrc = user.avatarUrl && user.avatarUrl.trim().length > 0 ? user.avatarUrl : "/AvatarDefault.svg";
+              const avatarSrc = user.avatarUrl && user.avatarUrl.trim().length > 0 ? user.avatarUrl : IMAGES.DEFAULT_AVATAR;
               return (
                 <Image src={avatarSrc} alt={user.name} width={36} height={36} className="rounded-full" />
               );

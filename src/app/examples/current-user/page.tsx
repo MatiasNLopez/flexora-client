@@ -3,7 +3,7 @@
 import React, { useCallback, useState } from "react";
 import ApiPanel from "@/components/ApiPanel";
 import { api } from "@/lib/api";
-import { AUTH_ENDPOINTS } from "@/lib/endpoints";
+import { AUTH_ENDPOINTS } from "@/lib/api_endpoints";
 
 export default function CurrentUserExamplePage() {
   const [loading, setLoading] = useState(false);

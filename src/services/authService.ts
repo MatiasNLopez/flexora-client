@@ -1,38 +1,8 @@
 import { api } from '@/lib/api';
-import { AUTH_ENDPOINTS, TOKENS, USER_ENDPOINTS } from '@/lib/endpoints';
-import { log } from 'console';
-
-// Tipos para autenticación
-export interface LoginCredentials {
-  username: string;
-  password: string;
-}
-
-export interface AuthResponse {
-  access: string;
-  refresh: string;
-  user: {
-    user_id: number;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    is_active: boolean;
-    created_at: Date;
-    updated_at: Date;
-  };
-}
-
-export interface User {
-  user_id: number;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  is_active: boolean;
-  created_at: Date;
-  updated_at : Date;
-}
+import { AUTH_ENDPOINTS, TOKENS } from '@/lib/api_endpoints';
+import { TYPE } from '@/lib/constants';
+import type { LoginCredentials, AuthResponse } from '@/models/auth';
+import type { User } from '@/models/user';
 
 class AuthService { 
 
@@ -40,7 +10,7 @@ class AuthService {
     try {
       const response = await api.post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, credentials);
       
-      if (response.data.access) {
+      if (response.data.access && typeof window !== TYPE.UNDEFINED) {
         localStorage.setItem(TOKENS.ACCESS_TOKEN, response.data.access);
         localStorage.setItem(TOKENS.REFRESH_TOKEN, response.data.refresh);
       }
@@ -57,14 +27,21 @@ class AuthService {
       await api.post(AUTH_ENDPOINTS.LOGOUT);
     } catch (error) {
       console.error('Error en logout:', error);
+      // Continue with local cleanup even if server logout fails
     } finally {
-      localStorage.removeItem(TOKENS.ACCESS_TOKEN);
-      localStorage.removeItem(TOKENS.REFRESH_TOKEN);
+      if (typeof window !== TYPE.UNDEFINED) {
+        localStorage.removeItem(TOKENS.ACCESS_TOKEN);
+        localStorage.removeItem(TOKENS.REFRESH_TOKEN);
+      }
     }
   }
 
   async refreshToken(): Promise<{ access: string }> {
     try {
+      if (typeof window === TYPE.UNDEFINED) {
+        throw new Error('No refresh token available');
+      }
+      
       const refreshToken = localStorage.getItem(TOKENS.REFRESH_TOKEN);
       if (!refreshToken) {
         throw new Error('No refresh token available');
@@ -78,8 +55,10 @@ class AuthService {
       return response.data;
     } catch (error) {
       console.error('Error refreshing token:', error);
-      localStorage.removeItem(TOKENS.ACCESS_TOKEN);   
-      localStorage.removeItem(TOKENS.REFRESH_TOKEN);
+      if (typeof window !== TYPE.UNDEFINED) {
+        localStorage.removeItem(TOKENS.ACCESS_TOKEN);   
+        localStorage.removeItem(TOKENS.REFRESH_TOKEN);
+      }
       throw error;
     }
   }
@@ -95,10 +74,12 @@ class AuthService {
   }
 
   isAuthenticated(): boolean {
+    if (typeof window === TYPE.UNDEFINED) return false;
     return !!localStorage.getItem(TOKENS.ACCESS_TOKEN);
   }
 
   getAccessToken(): string | null {
+    if (typeof window === TYPE.UNDEFINED) return null;
     return localStorage.getItem(TOKENS.ACCESS_TOKEN);
   }
 }

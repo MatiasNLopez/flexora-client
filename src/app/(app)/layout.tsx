@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import SidebarMenu from '@/components/SidebarMenu';
 import NavBar from '@/components/iu/NavBar';
 import { useAuth } from '@/contexts/AuthContext';
+import { IMAGES } from '@/lib/constants';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -19,8 +20,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             user={{
               name: user ? `${user.first_name} ${user.last_name}`.trim() || user.username : 'Guest',
               email: user?.email || 'No name',
-              avatarUrl: '/AvatarDefault.svg',
-              badgeLabel: 'Basic',
+              avatarUrl: user?.avatar || IMAGES.DEFAULT_AVATAR,
+              badgeLabel: user?.plan || 'Basic', // TODO: Aqui obtener el plan del usuario
             }}
             searchValue={search}
             onSearchChange={setSearch}
