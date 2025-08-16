@@ -1,71 +1,61 @@
 import { ReactNode } from "react";
 
-export type TableRowCell = {
-  key?: string | number;
-  className?: string;
-  content: ReactNode;
-};
-
-export type LeadCell = {
+type LeadCell = {
   isHeader?: boolean;
-  className?: string;
   content: ReactNode;
 };
 
-export type TableRowProps = {
+type RowCell = {
+  key: string;
+  content: ReactNode;
+  className?: string;
+};
+
+type Props = {
   rowId: string;
   selectable?: boolean;
   onSelectChange?: (checked: boolean) => void;
-  leadCell?: LeadCell;
-  cells: TableRowCell[];
-  className?: string;
+  leadCell: LeadCell;
+  cells: RowCell[];
+  isSelected?: boolean;
 };
 
-export default function TableRow(props: TableRowProps) {
-  const { rowId, selectable, onSelectChange, leadCell, cells, className } = props;
-
+export default function TableRow({
+  rowId,
+  selectable = false,
+  onSelectChange,
+  leadCell,
+  cells,
+  isSelected = false,
+}: Props) {
   return (
     <tr
-      className={
-        `bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600` +
-        (className ? ` ${className}` : "")
-      }
+      className={`hover:bg-gray-50 ${isSelected ? "bg-blue-50/40" : "bg-white"}`}
+      data-rowid={rowId}
     >
       {selectable && (
-        <td className="w-4 p-4">
-          <div className="flex items-center">
-            <input
-              id={`checkbox-row-${rowId}`}
-              type="checkbox"
-              onChange={(e) => onSelectChange?.(e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <label htmlFor={`checkbox-row-${rowId}`} className="sr-only">
-              checkbox
-            </label>
-          </div>
+        <td className="w-10 px-4 py-3">
+          <input
+            aria-label={`select-row-${rowId}`}
+            type="checkbox"
+            defaultChecked={isSelected}
+            onChange={(e) => onSelectChange?.(e.target.checked)}
+            className="h-4 w-4 rounded-[6px] border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+          />
         </td>
       )}
 
-      {leadCell && (
-        leadCell.isHeader ? (
-          <th
-            scope="row"
-            className={`flex items-center px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white${leadCell.className ? ` ${leadCell.className}` : ""}`}
-          >
-            {leadCell.content}
-          </th>
-        ) : (
-          <td className={`px-6 py-4${leadCell.className ? ` ${leadCell.className}` : ""}`}>{leadCell.content}</td>
-        )
-      )}
+      {/* Lead cell: username/email/avatar */}
+      <th scope="row" className="px-4 py-3 font-normal text-gray-700">
+        {leadCell.content}
+      </th>
 
-      {cells.map((cell, idx) => (
-        <td key={cell.key ?? idx} className={`px-6 py-4${cell.className ? ` ${cell.className}` : ""}`}>
-          {cell.content}
+      {/* Other cells */}
+      {cells.map((c) => (
+        <td key={c.key} className={`px-4 py-3 align-middle ${c.className ?? ""}`}>
+          {c.content}
         </td>
       ))}
     </tr>
   );
 }
-

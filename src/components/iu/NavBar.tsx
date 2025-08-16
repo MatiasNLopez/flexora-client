@@ -45,21 +45,7 @@ export default function NavBar(props: NavBarProps) {
   return (
     <div className={`w-full px-2 sm:px-4 ${className ?? ""}`}>
       <div className="flex items-center justify-between gap-4 w-full">
-        {/* Search */}
-        <form onSubmit={handleSubmit} className="flex-1 max-w-3xl">
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <HiOutlineSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-            </div>
-            <input
-              value={searchValue}
-              onChange={handleChange}
-              className="block w-full pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-indigo-600 focus:border-indigo-600 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-              placeholder={searchPlaceholder}
-            />
-          </div>
-        </form>
-
+        
         {/* Actions */}
         <div className="flex items-center gap-3"> 
           <button

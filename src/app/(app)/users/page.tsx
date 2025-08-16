@@ -120,11 +120,6 @@ export default function UsersPage() {
         selectable
         getRowId={(u) => String(u.user_id)}
         onSearchChange={setSearch}
-        leftActions={
-          <button className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 text-white text-sm px-3 py-1.5 hover:bg-indigo-700">
-            + Add User
-          </button>
-        }
         renderProfile={(u) => ({
           avatarUrl: IMAGES.DEFAULT_AVATAR,
           title: u.username,
